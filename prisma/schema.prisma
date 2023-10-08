@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String              @id @default(uuid())
+  fullName   String
+  userName   String              @unique
+  password   String
+  role       UserRole            @default(user)
+  profileImg String?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  menus      MenuPermission[]
+  subMenus   SubMenuPermission[]
+  sections   SectionPermission[]
+
+  @@map("users")
+}
+
+model MenuPermission {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  label  String
+}
+
+model SubMenuPermission {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  label  String
+}
+
+model SectionPermission {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  label  String
+}
+
+enum UserRole {
+  super_admin
+  admin
+  user
+}
