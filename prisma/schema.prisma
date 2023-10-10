@@ -56,7 +56,7 @@ model SectionPermission {
   updatedAt DateTime @updatedAt
 }
 
-model brand {
+model Brand {
   id    String @id @default(uuid())
   label String
 
@@ -64,7 +64,7 @@ model brand {
   updatedAt DateTime @updatedAt
 }
 
-model vehicleModel {
+model VehicleModel {
   id    String @id @default(uuid())
   label String
 
@@ -77,7 +77,7 @@ model Vehicle {
   vehicleId    String  @unique
   regNo        String  @unique
   brand        String
-  model        String
+  model        String?
   vehicleValue Int?
   isActive     Boolean @default(true)
   trips        Trip[]
