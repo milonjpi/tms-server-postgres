@@ -5,7 +5,8 @@ const create = z.object({
     regNo: z.string({ required_error: 'Reg No is Required' }),
     brand: z.string({ required_error: 'Brand No is Required' }),
     model: z.string().optional(),
-    vehicleValue: z.string().optional(),
+    vehicleValue: z.number().optional(),
+    driverId: z.string().optional(),
   }),
 });
 
@@ -14,7 +15,8 @@ const update = z.object({
     regNo: z.string().optional(),
     brand: z.string().optional(),
     model: z.string().optional(),
-    vehicleValue: z.string().optional(),
+    vehicleValue: z.number().optional(),
+    driverId: z.string().optional(),
   }),
 });
 

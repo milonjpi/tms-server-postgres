@@ -58,7 +58,7 @@ model SectionPermission {
 
 model Brand {
   id    String @id @default(uuid())
-  label String
+  label String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -66,7 +66,21 @@ model Brand {
 
 model VehicleModel {
   id    String @id @default(uuid())
-  label String
+  label String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Driver {
+  id       String    @id @default(uuid())
+  driverId String    @unique
+  name     String
+  mobile   String
+  address  String
+  isActive Boolean   @default(true)
+  trips    Trip[]
+  vehicles Vehicle[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,19 +93,10 @@ model Vehicle {
   brand        String
   model        String?
   vehicleValue Int?
-  isActive     Boolean @default(true)
-  trips        Trip[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+  driverId String?
+  driver   Driver? @relation(fields: [driverId], references: [id])
 
-model Driver {
-  id       String  @id @default(uuid())
-  driverId String  @unique
-  name     String
-  mobile   String
-  address  String
   isActive Boolean @default(true)
   trips    Trip[]
 

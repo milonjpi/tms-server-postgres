@@ -24,6 +24,9 @@ const createVehicle = async (data: Vehicle): Promise<Vehicle | null> => {
 // get all Vehicles
 const getVehicles = async (): Promise<Vehicle[]> => {
   const result = await prisma.vehicle.findMany({
+    include: {
+      driver: true,
+    },
     orderBy: {
       vehicleId: 'asc',
     },
