@@ -34,6 +34,8 @@ model MenuPermission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("menuPermissions")
 }
 
 model SubMenuPermission {
@@ -44,6 +46,8 @@ model SubMenuPermission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("subMenuPermissions")
 }
 
 model SectionPermission {
@@ -54,6 +58,8 @@ model SectionPermission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("sectionPermissions")
 }
 
 model Brand {
@@ -62,6 +68,8 @@ model Brand {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("brands")
 }
 
 model VehicleModel {
@@ -70,6 +78,8 @@ model VehicleModel {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("models")
 }
 
 model Driver {
@@ -84,6 +94,8 @@ model Driver {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("drivers")
 }
 
 model Vehicle {
@@ -102,6 +114,8 @@ model Vehicle {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("vehicles")
 }
 
 model Party {
@@ -114,6 +128,9 @@ model Party {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  trips     Trip[]
+
+  @@map("parties")
 }
 
 model Trip {
@@ -123,8 +140,9 @@ model Trip {
   endDate   DateTime
   from      String
   to        String
-  distance  Int
+  distance  Int?
   tripValue Int
+  costing   Boolean  @default(false)
 
   vehicleId String
   vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
@@ -132,8 +150,31 @@ model Trip {
   driverId String
   driver   Driver @relation(fields: [driverId], references: [id])
 
+  partyId String
+  party   Party  @relation(fields: [partyId], references: [id])
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  tripExpenses TripExpense[]
+
+  @@map("trips")
+}
+
+model TripExpense {
+  id String @id @default(uuid())
+
+  tripId String
+  trip   Trip   @relation(fields: [tripId], references: [id])
+
+  expenseHeadId String
+  expenseHead   ExpenseHead @relation(fields: [expenseHeadId], references: [id])
+
+  amount Int
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("tripExpenses")
 }
 
 model ExpenseTitle {
@@ -143,6 +184,8 @@ model ExpenseTitle {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   expenseHeads ExpenseHead[]
+
+  @@map("expenseTitles")
 }
 
 model ExpenseHead {
@@ -151,8 +194,11 @@ model ExpenseHead {
   expenseTitleId String
   expenseTitle   ExpenseTitle @relation(fields: [expenseTitleId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  tripExpenses TripExpense[]
+
+  @@map("expenseHeads")
 }
 
 model Accessory {
@@ -161,6 +207,8 @@ model Accessory {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("accessories")
 }
 
 // ENUMS

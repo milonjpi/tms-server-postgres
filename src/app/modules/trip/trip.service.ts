@@ -24,6 +24,11 @@ const createTrip = async (data: Trip): Promise<Trip | null> => {
 // get all Trips
 const getTrips = async (): Promise<Trip[]> => {
   const result = await prisma.trip.findMany({
+    include: {
+      vehicle: true,
+      driver: true,
+      party: true,
+    },
     orderBy: {
       tripId: 'asc',
     },
