@@ -4,6 +4,9 @@ import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { DriverService } from './driver.service';
 import { Driver } from '@prisma/client';
+import pick from '../../../shared/pick';
+import { driverFilterableFields } from './driver.constant';
+import { paginationFields } from '../../../constants/pagination';
 
 // create Driver
 const createDriver = catchAsync(async (req: Request, res: Response) => {
@@ -21,13 +24,16 @@ const createDriver = catchAsync(async (req: Request, res: Response) => {
 
 // get all Drivers
 const getDrivers = catchAsync(async (req: Request, res: Response) => {
-  const result = await DriverService.getDrivers();
+  const filters = pick(req.query, driverFilterableFields);
+  const paginationOptions = pick(req.query, paginationFields);
+  const result = await DriverService.getDrivers(filters, paginationOptions);
 
   sendResponse<Driver[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Drivers retrieved successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 

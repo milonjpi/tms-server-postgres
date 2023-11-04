@@ -4,6 +4,9 @@ import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { Vehicle } from '@prisma/client';
 import { VehicleService } from './vehicle.service';
+import pick from '../../../shared/pick';
+import { vehicleFilterableFields } from './vehicle.constant';
+import { paginationFields } from '../../../constants/pagination';
 
 // create Vehicle
 const createVehicle = catchAsync(async (req: Request, res: Response) => {
@@ -21,13 +24,16 @@ const createVehicle = catchAsync(async (req: Request, res: Response) => {
 
 // get all Vehicles
 const getVehicles = catchAsync(async (req: Request, res: Response) => {
-  const result = await VehicleService.getVehicles();
+  const filters = pick(req.query, vehicleFilterableFields);
+  const paginationOptions = pick(req.query, paginationFields);
+  const result = await VehicleService.getVehicles(filters, paginationOptions);
 
   sendResponse<Vehicle[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Vehicles retrieved successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 

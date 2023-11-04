@@ -10,6 +10,7 @@ import { VehicleRoutes } from '../modules/vehicle/vehicle.route';
 import { DriverRoutes } from '../modules/driver/driver.route';
 import { PartyRoutes } from '../modules/party/party.route';
 import { TripRoutes } from '../modules/trip/trip.route';
+import { ProfileRoutes } from '../modules/profile/profile.route';
 
 const router = express.Router();
 
@@ -21,6 +22,10 @@ const moduleRoutes = [
   {
     path: '/user',
     route: UserRoutes,
+  },
+  {
+    path: '/profile',
+    route: ProfileRoutes,
   },
   {
     path: '/menu-permission',

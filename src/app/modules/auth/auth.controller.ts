@@ -3,23 +3,8 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { AuthService } from './auth.service';
-import { User } from '@prisma/client';
 import { ILoginUserResponse, IRefreshTokenResponse } from './auth.interface';
 import config from '../../../config';
-
-// signup
-const signUp = catchAsync(async (req: Request, res: Response) => {
-  const data = req.body;
-
-  const result = await AuthService.signUp(data);
-
-  sendResponse<User>(res, {
-    success: true,
-    statusCode: httpStatus.OK,
-    message: 'User Added Successfully',
-    data: result,
-  });
-});
 
 // signIn
 const signIn = catchAsync(async (req: Request, res: Response) => {
@@ -32,7 +17,7 @@ const signIn = catchAsync(async (req: Request, res: Response) => {
   const cookieOptions = {
     secure: false,
     httpOnly: true,
-    maxAge: parseInt(config.jwt.cookie_max_age || '2592000000'),
+    maxAge: parseInt(config.jwt.cookie_max_age || '31536000000'),
   };
 
   res.cookie('truckMSToken', refreshToken, cookieOptions);
@@ -62,15 +47,6 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 
   const result = await AuthService.refreshToken(truckMSToken);
 
-  // set refresh token into cookie
-  const cookieOptions = {
-    secure: false,
-    httpOnly: true,
-    maxAge: parseInt(config.jwt.cookie_max_age || '2592000000'),
-  };
-
-  res.cookie('truckMSToken', truckMSToken, cookieOptions);
-
   sendResponse<IRefreshTokenResponse>(res, {
     statusCode: 200,
     success: true,
@@ -80,7 +56,6 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const AuthController = {
-  signUp,
   signIn,
   logout,
   refreshToken,

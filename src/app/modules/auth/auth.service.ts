@@ -8,20 +8,7 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { Secret } from 'jsonwebtoken';
 import { ILoginUserResponse, IRefreshTokenResponse } from './auth.interface';
 
-// signup
-const signUp = async (data: User): Promise<User | null> => {
-  data.password = await bcrypt.hash(
-    data.password,
-    Number(config.bcrypt_salt_rounds)
-  );
-  const result = await prisma.user.create({ data });
 
-  if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Signup');
-  }
-
-  return result;
-};
 
 // signIn
 const signIn = async (
@@ -32,11 +19,6 @@ const signIn = async (
   const isUserExist = await prisma.user.findUnique({
     where: {
       userName,
-    },
-    include: {
-      menus: true,
-      subMenus: true,
-      sections: true,
     },
   });
 
@@ -51,23 +33,22 @@ const signIn = async (
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect');
   }
   // create access token and refresh token
-  const { role } = isUserExist;
+  const { id, role } = isUserExist;
 
   const accessToken = jwtHelpers.createToken(
-    { userName, role },
+    { id, role },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
 
   const refreshToken = jwtHelpers.createToken(
-    { userName, role },
+    { id, role },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string
   );
 
   return {
     accessToken,
-    user: isUserExist,
     refreshToken,
   };
 };
@@ -86,18 +67,13 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token');
   }
 
-  const { userName } = verifiedToken;
+  const { id } = verifiedToken;
 
   // checking deleted user's refresh token
 
   const isUserExist = await prisma.user.findUnique({
     where: {
-      userName,
-    },
-    include: {
-      menus: true,
-      subMenus: true,
-      sections: true,
+      id,
     },
   });
 
@@ -109,7 +85,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
 
   const newAccessToken = jwtHelpers.createToken(
     {
-      userName: isUserExist.userName,
+      id: isUserExist.id,
       role: isUserExist.role,
     },
     config.jwt.secret as Secret,
@@ -118,12 +94,10 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
 
   return {
     accessToken: newAccessToken,
-    user: isUserExist,
   };
 };
 
 export const AuthService = {
-  signUp,
   signIn,
   refreshToken,
 };

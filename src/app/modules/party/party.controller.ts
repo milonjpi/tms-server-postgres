@@ -4,6 +4,9 @@ import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { PartyService } from './party.service';
 import { Party } from '@prisma/client';
+import pick from '../../../shared/pick';
+import { partyFilterableFields } from './party.constant';
+import { paginationFields } from '../../../constants/pagination';
 
 // create Party
 const createParty = catchAsync(async (req: Request, res: Response) => {
@@ -21,13 +24,16 @@ const createParty = catchAsync(async (req: Request, res: Response) => {
 
 // get all Parties
 const getParties = catchAsync(async (req: Request, res: Response) => {
-  const result = await PartyService.getParties();
+  const filters = pick(req.query, partyFilterableFields);
+  const paginationOptions = pick(req.query, paginationFields);
+  const result = await PartyService.getParties(filters, paginationOptions);
 
   sendResponse<Party[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Parties retrieved successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 

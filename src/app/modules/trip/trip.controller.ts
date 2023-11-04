@@ -4,6 +4,9 @@ import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { TripService } from './trip.service';
 import { Trip } from '@prisma/client';
+import pick from '../../../shared/pick';
+import { tripFilterableFields } from './trip.constant';
+import { paginationFields } from '../../../constants/pagination';
 
 // create Trip
 const createTrip = catchAsync(async (req: Request, res: Response) => {
@@ -21,13 +24,16 @@ const createTrip = catchAsync(async (req: Request, res: Response) => {
 
 // get all Trips
 const getTrips = catchAsync(async (req: Request, res: Response) => {
-  const result = await TripService.getTrips();
+  const filters = pick(req.query, tripFilterableFields);
+  const paginationOptions = pick(req.query, paginationFields);
+  const result = await TripService.getAllTrips(filters, paginationOptions);
 
   sendResponse<Trip[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Trips retrieved successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 
