@@ -66,6 +66,9 @@ const getVehicles = async (
     },
     skip,
     take: limit,
+    include: {
+      driver: true,
+    },
   });
 
   const total = await prisma.vehicle.count({
