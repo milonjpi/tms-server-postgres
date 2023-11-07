@@ -2,8 +2,8 @@ import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
-import { TripValidation } from './trip.validation';
-import { TripController } from './trip.controller';
+import { TripExpenseValidation } from './tripExpense.validation';
+import { TripExpenseController } from './tripExpense.controller';
 
 const router = express.Router();
 
@@ -11,37 +11,30 @@ const router = express.Router();
 router.post(
   '/create',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  validateRequest(TripValidation.create),
-  TripController.createTrip
+  validateRequest(TripExpenseValidation.create),
+  TripExpenseController.createExpense
 );
 
-// get all Trip
+// get Trip expenses
 router.get(
   '/',
-  // auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  TripController.getTrips
-);
-
-// get single Trip
-router.get(
-  '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  TripController.getSingleTrip
+  TripExpenseController.getTripExpenses
 );
 
-// update single Trip
+// update Trip expenses
 router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  validateRequest(TripValidation.update),
-  TripController.updateTrip
+  validateRequest(TripExpenseValidation.update),
+  TripExpenseController.updateTripExpense
 );
 
 // delete single Trip
 router.delete(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-  TripController.deleteTrip
+  TripExpenseController.deleteTripExpense
 );
 
-export const TripRoutes = router;
+export const TripExpenseRoutes = router;

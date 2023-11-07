@@ -78,6 +78,7 @@ const getAllTrips = async (
       vehicle: true,
       driver: true,
       party: true,
+      tripExpenses: true,
     },
   });
 

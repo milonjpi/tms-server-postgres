@@ -11,6 +11,8 @@ import { DriverRoutes } from '../modules/driver/driver.route';
 import { PartyRoutes } from '../modules/party/party.route';
 import { TripRoutes } from '../modules/trip/trip.route';
 import { ProfileRoutes } from '../modules/profile/profile.route';
+import { ExpenseHeadRoutes } from '../modules/expenseHead/expenseHead.route';
+import { TripExpenseRoutes } from '../modules/tripExpense/tripExpense.route';
 
 const router = express.Router();
 
@@ -60,8 +62,16 @@ const moduleRoutes = [
     route: PartyRoutes,
   },
   {
+    path: '/expense-head',
+    route: ExpenseHeadRoutes,
+  },
+  {
     path: '/trip',
     route: TripRoutes,
+  },
+  {
+    path: '/trip-expense',
+    route: TripExpenseRoutes,
   },
 ];
 

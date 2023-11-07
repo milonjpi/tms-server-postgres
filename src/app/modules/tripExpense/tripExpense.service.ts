@@ -5,19 +5,38 @@ import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IGenericResponse } from '../../../interfaces/common';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
-import { asyncForEach } from '../../../shared/utils';
 import { ITripExpenseFilters } from './tripExpense.interface';
 import { tripExpenseSearchableFields } from './tripExpense.constant';
 
 // create Trip Expense
-const createExpense = async (data: TripExpense[]): Promise<Trip | null> => {
-  const result = await prisma.$transaction(async trans => {
-    await asyncForEach(data, async (expense: TripExpense) => {
-      await trans.tripExpense.create({
-        data: expense,
-      });
-    });
-    return trans.trip.findUnique({ where: { id: data[0]?.tripId } });
+const createExpense = async (
+  id: string,
+  data: TripExpense[]
+): Promise<Trip | null> => {
+  const isExist = await prisma.trip.findFirst({
+    where: {
+      id,
+      costing: false,
+    },
+  });
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Trip Not Found');
+  }
+
+  const result = await prisma.trip.update({
+    where: {
+      id,
+      costing: false,
+    },
+    data: {
+      costing: true,
+      tripExpenses: {
+        createMany: {
+          data,
+        },
+      },
+    },
   });
 
   if (!result) {
@@ -27,16 +46,20 @@ const createExpense = async (data: TripExpense[]): Promise<Trip | null> => {
   return result;
 };
 
-// get all Trip Expenses
-const getAllTripExpenses = async (
+// get Trip Expenses
+const getTripExpenses = async (
   filters: ITripExpenseFilters,
   paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<TripExpense[]>> => {
+): Promise<IGenericResponse<Trip[]>> => {
   const { searchTerm, ...filterData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
 
   const andConditions = [];
+
+  andConditions.push({
+    costing: true,
+  });
 
   if (searchTerm) {
     andConditions.push({
@@ -57,10 +80,10 @@ const getAllTripExpenses = async (
     });
   }
 
-  const whereConditions: Prisma.TripExpenseWhereInput =
+  const whereConditions: Prisma.TripWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  const result = await prisma.tripExpense.findMany({
+  const result = await prisma.trip.findMany({
     where: whereConditions,
     orderBy: {
       [sortBy]: sortOrder,
@@ -68,11 +91,15 @@ const getAllTripExpenses = async (
     skip,
     take: limit,
     include: {
-      trip: true,
+      tripExpenses: {
+        include: {
+          expenseHead: true,
+        },
+      },
     },
   });
 
-  const total = await prisma.tripExpense.count({
+  const total = await prisma.trip.count({
     where: whereConditions,
   });
   const totalPage = Math.ceil(total / limit);
@@ -88,31 +115,71 @@ const getAllTripExpenses = async (
   };
 };
 
-// get single Trip expense
-const getSingleTripExpense = async (
-  id: string
-): Promise<TripExpense | null> => {
-  const result = await prisma.tripExpense.findUnique({
+// update Trip Expense
+const updateTripExpense = async (
+  id: string,
+  data: TripExpense[]
+): Promise<Trip | null> => {
+  const isExist = await prisma.trip.findFirst({
     where: {
       id,
-    },
-    include: {
-      trip: true,
+      costing: true,
     },
   });
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Trip Not Found');
+  }
+
+  const result = await prisma.$transaction(async trans => {
+    await trans.trip.update({
+      where: {
+        id,
+        costing: true,
+      },
+      data: {
+        tripExpenses: {
+          deleteMany: {},
+        },
+      },
+    });
+
+    return await trans.trip.update({
+      where: {
+        id,
+        costing: true,
+      },
+      data: {
+        tripExpenses: {
+          createMany: {
+            data,
+          },
+        },
+      },
+      include: {
+        tripExpenses: {
+          include: {
+            expenseHead: true,
+          },
+        },
+      },
+    });
+  });
+
+  if (!result) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Trip Expense');
+  }
 
   return result;
 };
 
-// update single Trip
-const updateTrip = async (
-  id: string,
-  payload: Partial<Trip>
-): Promise<Trip | null> => {
+// delete Trip expense
+const deleteTripExpense = async (id: string): Promise<Trip | null> => {
   // check is exist
-  const isExist = await prisma.trip.findUnique({
+  const isExist = await prisma.trip.findFirst({
     where: {
       id,
+      costing: true,
     },
   });
 
@@ -124,42 +191,23 @@ const updateTrip = async (
     where: {
       id,
     },
-    data: payload,
-  });
-
-  if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Update Trip');
-  }
-
-  return result;
-};
-
-// delete Trip
-const deleteTrip = async (id: string): Promise<Trip | null> => {
-  // check is exist
-  const isExist = await prisma.trip.findUnique({
-    where: {
-      id,
+    data: {
+      costing: false,
+      tripExpenses: {
+        deleteMany: {},
+      },
     },
-  });
-
-  if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Trip Not Found');
-  }
-
-  const result = await prisma.trip.delete({
-    where: {
-      id,
+    include: {
+      tripExpenses: true,
     },
   });
 
   return result;
 };
 
-export const ExpenseService = {
+export const TripExpenseService = {
   createExpense,
-  getAllTripExpenses,
-  getSingleTripExpense,
-  updateTrip,
-  deleteTrip,
+  getTripExpenses,
+  updateTripExpense,
+  deleteTripExpense,
 };
