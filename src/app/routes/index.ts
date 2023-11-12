@@ -13,6 +13,9 @@ import { TripRoutes } from '../modules/trip/trip.route';
 import { ProfileRoutes } from '../modules/profile/profile.route';
 import { ExpenseHeadRoutes } from '../modules/expenseHead/expenseHead.route';
 import { TripExpenseRoutes } from '../modules/tripExpense/tripExpense.route';
+import { UomRoutes } from '../modules/uom/uom.route';
+import { FuelTypeRoutes } from '../modules/fuelType/fuelType.route';
+import { FuelRoutes } from '../modules/fuel/fuel.route';
 
 const router = express.Router();
 
@@ -72,6 +75,18 @@ const moduleRoutes = [
   {
     path: '/trip-expense',
     route: TripExpenseRoutes,
+  },
+  {
+    path: '/uom',
+    route: UomRoutes,
+  },
+  {
+    path: '/fuel-type',
+    route: FuelTypeRoutes,
+  },
+  {
+    path: '/fuel',
+    route: FuelRoutes,
   },
 ];
 

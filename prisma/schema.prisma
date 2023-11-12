@@ -112,8 +112,11 @@ model Vehicle {
   isActive Boolean @default(true)
   trips    Trip[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  fuels      Fuel[]
+  expenses   Expense[]
+  paperWorks PaperWork[]
 
   @@map("vehicles")
 }
@@ -186,6 +189,7 @@ model ExpenseHead {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   tripExpenses TripExpense[]
+  expenses     Expense[]
 
   @@map("expenseHeads")
 }
@@ -198,6 +202,87 @@ model Accessory {
   updatedAt DateTime @updatedAt
 
   @@map("accessories")
+}
+
+model FuelType {
+  id    String @id @default(uuid())
+  label String
+
+  fuels Fuel[]
+
+  @@map("fuelTypes")
+}
+
+model Uom {
+  id    String @id @default(uuid())
+  label String
+
+  fuels Fuel[]
+
+  @@map("uoms")
+}
+
+model Fuel {
+  id         String   @id @default(uuid())
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id])
+  date       DateTime
+  fuelTypeId String
+  fuelType   FuelType @relation(fields: [fuelTypeId], references: [id])
+  uomId      String
+  uom        Uom      @relation(fields: [uomId], references: [id])
+  quantity   Float
+  amount     Int
+  remarks    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("fuels")
+}
+
+model Expense {
+  id String @id @default(uuid())
+
+  vehicleId String?
+  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
+
+  expenseHeadId String
+  expenseHead   ExpenseHead @relation(fields: [expenseHeadId], references: [id])
+
+  description String
+  amount      Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("expenses")
+}
+
+model PaperType {
+  id    String @id @default(uuid())
+  label String
+
+  @@map("paperTypes")
+}
+
+model PaperWork {
+  id        String  @id @default(uuid())
+  title     String
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  date       DateTime
+  expiryDate DateTime
+  notifyDate DateTime?
+
+  amount  Int
+  remarks String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("paperWorks")
 }
 
 // ENUMS
