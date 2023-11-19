@@ -77,6 +77,11 @@ const getParties = async (
     },
     skip,
     take: limit,
+    include: {
+      vehicle: true,
+      fuelType: true,
+      uom: true,
+    },
   });
 
   const total = await prisma.fuel.count({
