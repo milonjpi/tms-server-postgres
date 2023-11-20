@@ -16,6 +16,7 @@ import { TripExpenseRoutes } from '../modules/tripExpense/tripExpense.route';
 import { UomRoutes } from '../modules/uom/uom.route';
 import { FuelTypeRoutes } from '../modules/fuelType/fuelType.route';
 import { FuelRoutes } from '../modules/fuel/fuel.route';
+import { ExpenseRoutes } from '../modules/expense/expense.route';
 
 const router = express.Router();
 
@@ -87,6 +88,10 @@ const moduleRoutes = [
   {
     path: '/fuel',
     route: FuelRoutes,
+  },
+  {
+    path: '/expense',
+    route: ExpenseRoutes,
   },
 ];
 

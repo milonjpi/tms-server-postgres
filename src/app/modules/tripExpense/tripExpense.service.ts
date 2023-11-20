@@ -167,7 +167,7 @@ const updateTripExpense = async (
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Trip Expense');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update Trip Expense');
   }
 
   return result;

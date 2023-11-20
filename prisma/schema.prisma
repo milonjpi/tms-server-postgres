@@ -244,6 +244,8 @@ model Fuel {
 model Expense {
   id String @id @default(uuid())
 
+  date DateTime
+
   vehicleId String?
   vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
 
