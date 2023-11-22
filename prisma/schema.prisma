@@ -83,17 +83,17 @@ model VehicleModel {
 }
 
 model Driver {
-  id       String    @id @default(uuid())
-  driverId String    @unique
+  id       String  @id @default(uuid())
+  driverId String  @unique
   name     String
   mobile   String
   address  String
-  isActive Boolean   @default(true)
-  trips    Trip[]
-  vehicles Vehicle[]
+  isActive Boolean @default(true)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Vehicle   Vehicle[]
+  Trip      Trip[]
 
   @@map("drivers")
 }
@@ -110,13 +110,12 @@ model Vehicle {
   driver   Driver? @relation(fields: [driverId], references: [id])
 
   isActive Boolean @default(true)
-  trips    Trip[]
 
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  fuels      Fuel[]
-  expenses   Expense[]
-  paperWorks PaperWork[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Trip      Trip[]
+  Fuel      Fuel[]
+  PaperWork PaperWork[]
 
   @@map("vehicles")
 }
@@ -131,7 +130,7 @@ model Party {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  trips     Trip[]
+  Trip      Trip[]
 
   @@map("parties")
 }
@@ -156,9 +155,11 @@ model Trip {
   partyId String
   party   Party  @relation(fields: [partyId], references: [id])
 
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  tripExpenses TripExpense[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  TripExpense TripExpense[]
+  Income      Income[]
+  Expense     Expense[]
 
   @@map("trips")
 }
@@ -186,10 +187,10 @@ model ExpenseHead {
   isActive Boolean   @default(true)
   type     CostTitle
 
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  tripExpenses TripExpense[]
-  expenses     Expense[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  TripExpense TripExpense[]
+  expenses    Expense[]
 
   @@map("expenseHeads")
 }
@@ -217,28 +218,48 @@ model Uom {
   id    String @id @default(uuid())
   label String
 
-  fuels Fuel[]
-
   @@map("uoms")
 }
 
 model Fuel {
-  id         String   @id @default(uuid())
-  vehicleId  String
-  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id])
-  date       DateTime
+  id String @id @default(uuid())
+
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  date DateTime
+
   fuelTypeId String
   fuelType   FuelType @relation(fields: [fuelTypeId], references: [id])
-  uomId      String
-  uom        Uom      @relation(fields: [uomId], references: [id])
-  quantity   Float
-  amount     Int
-  remarks    String?
+
+  quantity Float
+  amount   Float
+  remarks  String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expenses  Expense[]
+
+  @@map("fuels")
+}
+
+model Income {
+  id String @id @default(uuid())
+
+  date DateTime
+
+  tripId String?
+  trip   Trip?   @relation(fields: [tripId], references: [id])
+
+  incomeHeadId String
+
+  amount  Int
+  remarks String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("fuels")
+  @@map("incomes")
 }
 
 model Expense {
@@ -246,14 +267,19 @@ model Expense {
 
   date DateTime
 
-  vehicleId String?
-  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
+  tripId String?
+  trip   Trip?   @relation(fields: [tripId], references: [id])
+
+  fuelId String?
+  fuel   Fuel?   @relation(fields: [fuelId], references: [id])
+
+  maintenanceId String?
 
   expenseHeadId String
   expenseHead   ExpenseHead @relation(fields: [expenseHeadId], references: [id])
 
-  description String
-  amount      Int
+  amount  Int
+  remarks String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
