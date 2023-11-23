@@ -1,31 +1,31 @@
 import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
-import { ExpenseHead, Prisma } from '@prisma/client';
+import { IncomeHead, Prisma } from '@prisma/client';
 import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IGenericResponse } from '../../../interfaces/common';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
-import { IExpenseHeadFilters } from './expenseHead.interface';
-import { expenseHeadSearchableFields } from './expenseHead.constant';
+import { IIncomeHeadFilters } from './incomeHead.interface';
+import { incomeHeadSearchableFields } from './incomeHead.constant';
 
-// create expense head
-const createExpenseHead = async (
-  data: ExpenseHead
-): Promise<ExpenseHead | null> => {
-  const result = await prisma.expenseHead.create({ data });
+// create income head
+const createIncomeHead = async (
+  data: IncomeHead
+): Promise<IncomeHead | null> => {
+  const result = await prisma.incomeHead.create({ data });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create expense head');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create income head');
   }
 
   return result;
 };
 
-// get all expense heads
-const getExpenseHeads = async (
-  filters: IExpenseHeadFilters,
+// get all income heads
+const getIncomeHeads = async (
+  filters: IIncomeHeadFilters,
   paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<ExpenseHead[]>> => {
+): Promise<IGenericResponse<IncomeHead[]>> => {
   const { searchTerm, ...filterData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -34,7 +34,7 @@ const getExpenseHeads = async (
 
   if (searchTerm) {
     andConditions.push({
-      OR: expenseHeadSearchableFields.map(field => ({
+      OR: incomeHeadSearchableFields.map(field => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -51,10 +51,10 @@ const getExpenseHeads = async (
     });
   }
 
-  const whereConditions: Prisma.ExpenseHeadWhereInput =
+  const whereConditions: Prisma.IncomeHeadWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  const result = await prisma.expenseHead.findMany({
+  const result = await prisma.incomeHead.findMany({
     where: whereConditions,
     orderBy: {
       [sortBy]: sortOrder,
@@ -63,7 +63,7 @@ const getExpenseHeads = async (
     take: limit,
   });
 
-  const total = await prisma.expenseHead.count({
+  const total = await prisma.incomeHead.count({
     where: whereConditions,
   });
   const totalPage = Math.ceil(total / limit);
@@ -79,23 +79,23 @@ const getExpenseHeads = async (
   };
 };
 
-// update expense head
-const updateExpenseHead = async (
+// update income head
+const updateIncomeHead = async (
   id: string,
-  payload: Partial<ExpenseHead>
-): Promise<ExpenseHead> => {
+  payload: Partial<IncomeHead>
+): Promise<IncomeHead> => {
   // check is exist
-  const isExist = await prisma.expenseHead.findUnique({
+  const isExist = await prisma.incomeHead.findUnique({
     where: {
       id,
     },
   });
 
   if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Expense Head Not Found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Income Head Not Found');
   }
 
-  const result = await prisma.expenseHead.update({
+  const result = await prisma.incomeHead.update({
     where: {
       id,
     },
@@ -103,14 +103,14 @@ const updateExpenseHead = async (
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Update Expense Head');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Update Income Head');
   }
 
   return result;
 };
 
-export const ExpenseHeadService = {
-  createExpenseHead,
-  getExpenseHeads,
-  updateExpenseHead,
+export const IncomeHeadService = {
+  createIncomeHead,
+  getIncomeHeads,
+  updateIncomeHead,
 };

@@ -12,7 +12,11 @@ import { paginationFields } from '../../../constants/pagination';
 const createTrip = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
 
-  const result = await TripService.createTrip(data);
+  const result = await TripService.createTrip(
+    data?.data,
+    data?.incomes,
+    data?.expenses
+  );
 
   sendResponse<Trip>(res, {
     success: true,
@@ -56,7 +60,12 @@ const updateTrip = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const data = req.body;
 
-  const result = await TripService.updateTrip(id, data);
+  const result = await TripService.updateTrip(
+    id,
+    data?.data,
+    data?.incomes,
+    data?.expenses
+  );
 
   sendResponse<Trip>(res, {
     success: true,

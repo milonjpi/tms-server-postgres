@@ -2,39 +2,32 @@ import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
-import { ExpenseValidation } from './expense.validation';
-import { ExpenseController } from './expense.controller';
+import { AccountHeadValidation } from './accountHead.validation';
+import { AccountHeadController } from './accountHead.controller';
 
 const router = express.Router();
 
-// create expense
+// create account head
 router.post(
   '/create',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  validateRequest(ExpenseValidation.create),
-  ExpenseController.createExpense
+  validateRequest(AccountHeadValidation.create),
+  AccountHeadController.createAccountHead
 );
 
-// get expenses
+// get account heads
 router.get(
   '/',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  ExpenseController.getExpenses
+  AccountHeadController.getAccountHeads
 );
 
-// update expense
+// update account head
 router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  validateRequest(ExpenseValidation.update),
-  ExpenseController.updateExpense
+  validateRequest(AccountHeadValidation.update),
+  AccountHeadController.updateAccountHead
 );
 
-// delete expense
-router.delete(
-  '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-  ExpenseController.deleteExpense
-);
-
-export const ExpenseRoutes = router;
+export const AccountHeadRoutes = router;

@@ -2,46 +2,46 @@ import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
-import { FuelValidation } from './fuel.validation';
-import { FuelController } from './fuel.controller';
+import { MaintenanceValidation } from './maintenance.validation';
+import { MaintenanceController } from './maintenance.controller';
 
 const router = express.Router();
 
-// create Fuel
+// create Maintenance
 router.post(
   '/create',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-  validateRequest(FuelValidation.create),
-  FuelController.createFuel
+  validateRequest(MaintenanceValidation.create),
+  MaintenanceController.createMaintenance
 );
 
-// get all Fuel
+// get all Maintenance
 router.get(
   '/',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  FuelController.getFuels
+  MaintenanceController.getMaintenances
 );
 
-// get single Fuel
+// get single Maintenance
 router.get(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  FuelController.getSingleFuel
+  MaintenanceController.getSingleMaintenance
 );
 
-// update single Fuel
+// update single Maintenance
 router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-  validateRequest(FuelValidation.update),
-  FuelController.updateFuel
+  validateRequest(MaintenanceValidation.update),
+  MaintenanceController.updateMaintenance
 );
 
-// delete single Fuel
+// delete single Maintenance
 router.delete(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-  FuelController.deleteFuel
+  MaintenanceController.deleteMaintenance
 );
 
-export const FuelRoutes = router;
+export const MaintenanceRoutes = router;

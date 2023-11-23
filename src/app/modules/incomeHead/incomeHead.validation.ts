@@ -14,7 +14,7 @@ const update = z.object({
   }),
 });
 
-export const ExpenseHeadValidation = {
+export const IncomeHeadValidation = {
   create,
   update,
 };

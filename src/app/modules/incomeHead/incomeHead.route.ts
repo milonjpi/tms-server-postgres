@@ -2,32 +2,32 @@ import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
-import { ExpenseHeadValidation } from './expenseHead.validation';
-import { ExpenseHeadController } from './expenseHead.controller';
+import { IncomeHeadValidation } from './incomeHead.validation';
+import { IncomeHeadController } from './incomeHead.controller';
 
 const router = express.Router();
 
-// create expense head
+// create income head
 router.post(
   '/create',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  validateRequest(ExpenseHeadValidation.create),
-  ExpenseHeadController.createExpenseHead
+  validateRequest(IncomeHeadValidation.create),
+  IncomeHeadController.createIncomeHead
 );
 
-// get expense heads
+// get income heads
 router.get(
   '/',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  ExpenseHeadController.getExpenseHeads
+  IncomeHeadController.getIncomeHeads
 );
 
-// update expense head
+// update income head
 router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  validateRequest(ExpenseHeadValidation.update),
-  ExpenseHeadController.updateExpenseHead
+  validateRequest(IncomeHeadValidation.update),
+  IncomeHeadController.updateIncomeHead
 );
 
-export const ExpenseHeadRoutes = router;
+export const IncomeHeadRoutes = router;

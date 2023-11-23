@@ -1,31 +1,34 @@
 import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
-import { ExpenseHead, Prisma } from '@prisma/client';
+import { EquipmentTitle, Prisma } from '@prisma/client';
 import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IGenericResponse } from '../../../interfaces/common';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
-import { IExpenseHeadFilters } from './expenseHead.interface';
-import { expenseHeadSearchableFields } from './expenseHead.constant';
+import { IEquipmentTitleFilters } from './equipmentTitle.interface';
+import { equipmentTitleSearchableFields } from './equipmentTitle.constant';
 
-// create expense head
-const createExpenseHead = async (
-  data: ExpenseHead
-): Promise<ExpenseHead | null> => {
-  const result = await prisma.expenseHead.create({ data });
+// create equipment title
+const createEquipmentTitle = async (
+  data: EquipmentTitle
+): Promise<EquipmentTitle | null> => {
+  const result = await prisma.equipmentTitle.create({ data });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create expense head');
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Failed to create equipment title'
+    );
   }
 
   return result;
 };
 
-// get all expense heads
-const getExpenseHeads = async (
-  filters: IExpenseHeadFilters,
+// get all equipment titles
+const getEquipmentTitles = async (
+  filters: IEquipmentTitleFilters,
   paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<ExpenseHead[]>> => {
+): Promise<IGenericResponse<EquipmentTitle[]>> => {
   const { searchTerm, ...filterData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -34,7 +37,7 @@ const getExpenseHeads = async (
 
   if (searchTerm) {
     andConditions.push({
-      OR: expenseHeadSearchableFields.map(field => ({
+      OR: equipmentTitleSearchableFields.map(field => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -51,10 +54,10 @@ const getExpenseHeads = async (
     });
   }
 
-  const whereConditions: Prisma.ExpenseHeadWhereInput =
+  const whereConditions: Prisma.EquipmentTitleWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  const result = await prisma.expenseHead.findMany({
+  const result = await prisma.equipmentTitle.findMany({
     where: whereConditions,
     orderBy: {
       [sortBy]: sortOrder,
@@ -63,7 +66,7 @@ const getExpenseHeads = async (
     take: limit,
   });
 
-  const total = await prisma.expenseHead.count({
+  const total = await prisma.equipmentTitle.count({
     where: whereConditions,
   });
   const totalPage = Math.ceil(total / limit);
@@ -79,23 +82,23 @@ const getExpenseHeads = async (
   };
 };
 
-// update expense head
-const updateExpenseHead = async (
+// update equipment title
+const updateEquipmentTitle = async (
   id: string,
-  payload: Partial<ExpenseHead>
-): Promise<ExpenseHead> => {
+  payload: Partial<EquipmentTitle>
+): Promise<EquipmentTitle> => {
   // check is exist
-  const isExist = await prisma.expenseHead.findUnique({
+  const isExist = await prisma.equipmentTitle.findUnique({
     where: {
       id,
     },
   });
 
   if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Expense Head Not Found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Equipment Title Not Found');
   }
 
-  const result = await prisma.expenseHead.update({
+  const result = await prisma.equipmentTitle.update({
     where: {
       id,
     },
@@ -103,14 +106,17 @@ const updateExpenseHead = async (
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Update Expense Head');
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Failed to Update Equipment Title'
+    );
   }
 
   return result;
 };
 
-export const ExpenseHeadService = {
-  createExpenseHead,
-  getExpenseHeads,
-  updateExpenseHead,
+export const EquipmentTitleService = {
+  createEquipmentTitle,
+  getEquipmentTitles,
+  updateEquipmentTitle,
 };

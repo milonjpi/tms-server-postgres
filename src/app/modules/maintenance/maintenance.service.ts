@@ -1,34 +1,39 @@
 import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
-import { Expense, Fuel, Prisma } from '@prisma/client';
+import { EquipmentUse, Expense, Maintenance, Prisma } from '@prisma/client';
 import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IGenericResponse } from '../../../interfaces/common';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
-import { IFuelFilters } from './fuel.interface';
-import { fuelSearchableFields } from './fuel.constant';
+import { IMaintenanceFilters } from './maintenance.interface';
+import { maintenanceSearchableFields } from './maintenance.constant';
 
-// create Fuel
-const createFuel = async (
-  data: Fuel,
-  expenses: Expense[]
-): Promise<Fuel | null> => {
-  const result = await prisma.fuel.create({
-    data: { ...data, expenses: { create: expenses } },
+// create Maintenance
+const createMaintenance = async (
+  data: Maintenance,
+  expenses: Expense[],
+  equipmentUses: EquipmentUse[]
+): Promise<Maintenance | null> => {
+  const result = await prisma.maintenance.create({
+    data: {
+      ...data,
+      expenses: { create: expenses },
+      equipmentUses: { create: equipmentUses },
+    },
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Fuel');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Maintenance');
   }
 
   return result;
 };
 
-// get all fuels
-const getFuels = async (
-  filters: IFuelFilters,
+// get all maintenances
+const getMaintenances = async (
+  filters: IMaintenanceFilters,
   paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<Fuel[]>> => {
+): Promise<IGenericResponse<Maintenance[]>> => {
   const { searchTerm, startDate, endDate, ...filterData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -37,7 +42,7 @@ const getFuels = async (
 
   if (searchTerm) {
     andConditions.push({
-      OR: fuelSearchableFields.map(field => ({
+      OR: maintenanceSearchableFields.map(field => ({
         [field]: {
           contains: ['quantity', 'amount'].includes(field)
             ? Number(searchTerm)
@@ -72,10 +77,10 @@ const getFuels = async (
     });
   }
 
-  const whereConditions: Prisma.FuelWhereInput =
+  const whereConditions: Prisma.MaintenanceWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  const result = await prisma.fuel.findMany({
+  const result = await prisma.maintenance.findMany({
     where: whereConditions,
     orderBy: {
       [sortBy]: sortOrder,
@@ -84,11 +89,12 @@ const getFuels = async (
     take: limit,
     include: {
       vehicle: true,
-      fuelType: true,
+      expenses: true,
+      equipmentUses: true,
     },
   });
 
-  const total = await prisma.fuel.count({
+  const total = await prisma.maintenance.count({
     where: whereConditions,
   });
   const totalPage = Math.ceil(total / limit);
@@ -104,40 +110,44 @@ const getFuels = async (
   };
 };
 
-// get single Fuel
-const getSingleFuel = async (id: string): Promise<Fuel | null> => {
-  const result = await prisma.fuel.findUnique({
+// get single Maintenance
+const getSingleMaintenance = async (
+  id: string
+): Promise<Maintenance | null> => {
+  const result = await prisma.maintenance.findUnique({
     where: {
       id,
     },
     include: {
       vehicle: true,
-      fuelType: true,
+      expenses: true,
+      equipmentUses: true,
     },
   });
 
   return result;
 };
 
-// update single Fuel
-const updateFuel = async (
+// update single Maintenance
+const updateMaintenance = async (
   id: string,
-  payload: Partial<Fuel>,
-  expenses: Expense[]
-): Promise<Fuel | null> => {
+  payload: Partial<Maintenance>,
+  expenses: Expense[],
+  equipmentUses: EquipmentUse[]
+): Promise<Maintenance | null> => {
   // check is exist
-  const isExist = await prisma.fuel.findUnique({
+  const isExist = await prisma.maintenance.findUnique({
     where: {
       id,
     },
   });
 
   if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Fuel Not Found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Maintenance Not Found');
   }
 
   const result = await prisma.$transaction(async trans => {
-    await trans.fuel.update({
+    await trans.maintenance.update({
       where: {
         id,
       },
@@ -145,10 +155,13 @@ const updateFuel = async (
         expenses: {
           deleteMany: {},
         },
+        equipmentUses: {
+          deleteMany: {},
+        },
       },
     });
 
-    return await trans.fuel.update({
+    return await trans.maintenance.update({
       where: {
         id,
       },
@@ -157,32 +170,35 @@ const updateFuel = async (
         expenses: {
           create: expenses,
         },
+        equipmentUses: {
+          create: equipmentUses,
+        },
       },
     });
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Update Fuel');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Update Maintenance');
   }
 
   return result;
 };
 
-// delete Fuel
-const deleteFuel = async (id: string): Promise<Fuel | null> => {
+// delete Maintenance
+const deleteMaintenance = async (id: string): Promise<Maintenance | null> => {
   // check is exist
-  const isExist = await prisma.fuel.findUnique({
+  const isExist = await prisma.maintenance.findUnique({
     where: {
       id,
     },
   });
 
   if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Fuel Not Found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Maintenance Not Found');
   }
 
   const result = await prisma.$transaction(async trans => {
-    await trans.fuel.update({
+    await trans.maintenance.update({
       where: {
         id,
       },
@@ -190,10 +206,13 @@ const deleteFuel = async (id: string): Promise<Fuel | null> => {
         expenses: {
           deleteMany: {},
         },
+        equipmentUses: {
+          deleteMany: {},
+        },
       },
     });
 
-    return await trans.fuel.delete({
+    return await trans.maintenance.delete({
       where: {
         id,
       },
@@ -203,10 +222,10 @@ const deleteFuel = async (id: string): Promise<Fuel | null> => {
   return result;
 };
 
-export const FuelService = {
-  createFuel,
-  getFuels,
-  getSingleFuel,
-  updateFuel,
-  deleteFuel,
+export const MaintenanceService = {
+  createMaintenance,
+  getMaintenances,
+  getSingleMaintenance,
+  updateMaintenance,
+  deleteMaintenance,
 };

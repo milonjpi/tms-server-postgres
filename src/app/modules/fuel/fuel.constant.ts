@@ -1,10 +1,15 @@
-export const fuelSearchableFields = ['quantity', 'amount', 'remarks'];
+export const fuelSearchableFields = [
+  'odoMeter',
+  'quantity',
+  'amount',
+  'remarks',
+];
 
 export const fuelFilterableFields = [
   'searchTerm',
   'vehicleId',
+  'driverId',
+  'fuelTypeId',
   'startDate',
   'endDate',
-  'fuelTypeId',
-  'uomId',
 ];

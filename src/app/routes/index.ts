@@ -12,11 +12,14 @@ import { PartyRoutes } from '../modules/party/party.route';
 import { TripRoutes } from '../modules/trip/trip.route';
 import { ProfileRoutes } from '../modules/profile/profile.route';
 import { ExpenseHeadRoutes } from '../modules/expenseHead/expenseHead.route';
-import { TripExpenseRoutes } from '../modules/tripExpense/tripExpense.route';
 import { UomRoutes } from '../modules/uom/uom.route';
 import { FuelTypeRoutes } from '../modules/fuelType/fuelType.route';
 import { FuelRoutes } from '../modules/fuel/fuel.route';
-import { ExpenseRoutes } from '../modules/expense/expense.route';
+import { AccountHeadRoutes } from '../modules/accountHead/accountHead.route';
+import { IncomeHeadRoutes } from '../modules/incomeHead/incomeHead.route';
+import { EquipmentTitleRoutes } from '../modules/equipmentTitle/equipmentTitle.route';
+import { EquipmentRoutes } from '../modules/equipment/equipment.route';
+import { MaintenanceRoutes } from '../modules/maintenance/maintenance.route';
 
 const router = express.Router();
 
@@ -66,16 +69,20 @@ const moduleRoutes = [
     route: PartyRoutes,
   },
   {
+    path: '/account-head',
+    route: AccountHeadRoutes,
+  },
+  {
+    path: '/income-head',
+    route: IncomeHeadRoutes,
+  },
+  {
     path: '/expense-head',
     route: ExpenseHeadRoutes,
   },
   {
     path: '/trip',
     route: TripRoutes,
-  },
-  {
-    path: '/trip-expense',
-    route: TripExpenseRoutes,
   },
   {
     path: '/uom',
@@ -90,8 +97,16 @@ const moduleRoutes = [
     route: FuelRoutes,
   },
   {
-    path: '/expense',
-    route: ExpenseRoutes,
+    path: '/equipment-title',
+    route: EquipmentTitleRoutes,
+  },
+  {
+    path: '/equipment',
+    route: EquipmentRoutes,
+  },
+  {
+    path: '/maintenance',
+    route: MaintenanceRoutes,
   },
 ];
 

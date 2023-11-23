@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
-import { Prisma, Trip } from '@prisma/client';
+import { Expense, Income, Prisma, Trip } from '@prisma/client';
 import ApiError from '../../../errors/ApiError';
 import { generateTripId } from './trip.utils';
 import { ITripFilters } from './trip.interface';
@@ -10,14 +10,28 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { tripSearchableFields } from './trip.constant';
 
 // create Trip
-const createTrip = async (data: Trip): Promise<Trip | null> => {
+const createTrip = async (
+  data: Trip,
+  incomes: Income[],
+  expenses: Expense[]
+): Promise<Trip | null> => {
   // generate Trip id
   const tripId = await generateTripId();
 
   // set Trip id
   data.tripId = tripId;
 
-  const result = await prisma.trip.create({ data });
+  const result = await prisma.trip.create({
+    data: {
+      ...data,
+      incomes: {
+        create: incomes,
+      },
+      expenses: {
+        create: expenses,
+      },
+    },
+  });
 
   if (!result) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Trip');
@@ -31,11 +45,27 @@ const getAllTrips = async (
   filters: ITripFilters,
   paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<Trip[]>> => {
-  const { searchTerm, minValue, maxValue, ...filterData } = filters;
+  const { searchTerm, startDate, endDate, minValue, maxValue, ...filterData } =
+    filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
 
   const andConditions = [];
+
+  if (startDate) {
+    andConditions.push({
+      startDate: {
+        gte: new Date(`${startDate}, 00:00:00`),
+      },
+    });
+  }
+  if (endDate) {
+    andConditions.push({
+      startDate: {
+        lte: new Date(`${endDate}, 23:59:59`),
+      },
+    });
+  }
 
   if (searchTerm) {
     andConditions.push({
@@ -78,11 +108,8 @@ const getAllTrips = async (
       vehicle: true,
       driver: true,
       party: true,
-      tripExpenses: {
-        include: {
-          expenseHead: true,
-        },
-      },
+      incomes: true,
+      expenses: true,
     },
   });
 
@@ -112,6 +139,8 @@ const getSingleTrip = async (id: string): Promise<Trip | null> => {
       vehicle: true,
       driver: true,
       party: true,
+      incomes: true,
+      expenses: true,
     },
   });
 
@@ -121,7 +150,9 @@ const getSingleTrip = async (id: string): Promise<Trip | null> => {
 // update single Trip
 const updateTrip = async (
   id: string,
-  payload: Partial<Trip>
+  payload: Partial<Trip>,
+  incomes: Income[],
+  expenses: Expense[]
 ): Promise<Trip | null> => {
   // check is exist
   const isExist = await prisma.trip.findUnique({
@@ -134,11 +165,35 @@ const updateTrip = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Trip Not Found');
   }
 
-  const result = await prisma.trip.update({
-    where: {
-      id,
-    },
-    data: payload,
+  const result = await prisma.$transaction(async trans => {
+    await trans.trip.update({
+      where: {
+        id,
+      },
+      data: {
+        incomes: {
+          deleteMany: {},
+        },
+        expenses: {
+          deleteMany: {},
+        },
+      },
+    });
+
+    return await trans.trip.update({
+      where: {
+        id,
+      },
+      data: {
+        ...payload,
+        incomes: {
+          create: incomes,
+        },
+        expenses: {
+          create: expenses,
+        },
+      },
+    });
   });
 
   if (!result) {
@@ -161,10 +216,26 @@ const deleteTrip = async (id: string): Promise<Trip | null> => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Trip Not Found');
   }
 
-  const result = await prisma.trip.delete({
-    where: {
-      id,
-    },
+  const result = await prisma.$transaction(async trans => {
+    await trans.trip.update({
+      where: {
+        id,
+      },
+      data: {
+        incomes: {
+          deleteMany: {},
+        },
+        expenses: {
+          deleteMany: {},
+        },
+      },
+    });
+
+    return await trans.trip.delete({
+      where: {
+        id,
+      },
+    });
   });
 
   return result;

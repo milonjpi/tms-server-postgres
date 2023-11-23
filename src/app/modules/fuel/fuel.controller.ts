@@ -12,7 +12,7 @@ import { paginationFields } from '../../../constants/pagination';
 const createFuel = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
 
-  const result = await FuelService.createFuel(data);
+  const result = await FuelService.createFuel(data?.data, data?.expenses);
 
   sendResponse<Fuel>(res, {
     success: true,
@@ -22,17 +22,17 @@ const createFuel = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// get all Parties
-const getParties = catchAsync(async (req: Request, res: Response) => {
+// get all fuels
+const getFuels = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, fuelFilterableFields);
   const paginationOptions = pick(req.query, paginationFields);
 
-  const result = await FuelService.getParties(filters, paginationOptions);
+  const result = await FuelService.getFuels(filters, paginationOptions);
 
   sendResponse<Fuel[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Parties retrieved successfully',
+    message: 'Fuels retrieved successfully',
     meta: result.meta,
     data: result.data,
   });
@@ -57,7 +57,7 @@ const updateFuel = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const data = req.body;
 
-  const result = await FuelService.updateFuel(id, data);
+  const result = await FuelService.updateFuel(id, data?.data, data?.expenses);
 
   sendResponse<Fuel>(res, {
     success: true,
@@ -76,14 +76,14 @@ const deleteFuel = catchAsync(async (req: Request, res: Response) => {
   sendResponse<Fuel>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Fuel Inactive successfully',
+    message: 'Fuel Deleted successfully',
     data: result,
   });
 });
 
 export const FuelController = {
   createFuel,
-  getParties,
+  getFuels,
   getSingleFuel,
   updateFuel,
   deleteFuel,

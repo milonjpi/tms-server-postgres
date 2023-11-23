@@ -1,4 +1,4 @@
-export type IExpenseHeadFilters = {
+export type IIncomeHeadFilters = {
   searchTerm?: string;
   accountHeadId?: string;
 };

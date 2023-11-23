@@ -1,31 +1,31 @@
 import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
-import { ExpenseHead, Prisma } from '@prisma/client';
+import { AccountHead, Prisma } from '@prisma/client';
 import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IGenericResponse } from '../../../interfaces/common';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
-import { IExpenseHeadFilters } from './expenseHead.interface';
-import { expenseHeadSearchableFields } from './expenseHead.constant';
+import { IAccountHeadFilters } from './accountHead.interface';
+import { accountHeadSearchableFields } from './accountHead.constant';
 
-// create expense head
-const createExpenseHead = async (
-  data: ExpenseHead
-): Promise<ExpenseHead | null> => {
-  const result = await prisma.expenseHead.create({ data });
+// create account head
+const createAccountHead = async (
+  data: AccountHead
+): Promise<AccountHead | null> => {
+  const result = await prisma.accountHead.create({ data });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create expense head');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create account head');
   }
 
   return result;
 };
 
-// get all expense heads
-const getExpenseHeads = async (
-  filters: IExpenseHeadFilters,
+// get all account heads
+const getAccountHeads = async (
+  filters: IAccountHeadFilters,
   paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<ExpenseHead[]>> => {
+): Promise<IGenericResponse<AccountHead[]>> => {
   const { searchTerm, ...filterData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -34,7 +34,7 @@ const getExpenseHeads = async (
 
   if (searchTerm) {
     andConditions.push({
-      OR: expenseHeadSearchableFields.map(field => ({
+      OR: accountHeadSearchableFields.map(field => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -46,15 +46,15 @@ const getExpenseHeads = async (
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.entries(filterData).map(([field, value]) => ({
-        [field]: value,
+        [field]: value === 'true' ? true : value === 'false' ? false : value,
       })),
     });
   }
 
-  const whereConditions: Prisma.ExpenseHeadWhereInput =
+  const whereConditions: Prisma.AccountHeadWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  const result = await prisma.expenseHead.findMany({
+  const result = await prisma.accountHead.findMany({
     where: whereConditions,
     orderBy: {
       [sortBy]: sortOrder,
@@ -63,7 +63,7 @@ const getExpenseHeads = async (
     take: limit,
   });
 
-  const total = await prisma.expenseHead.count({
+  const total = await prisma.accountHead.count({
     where: whereConditions,
   });
   const totalPage = Math.ceil(total / limit);
@@ -79,23 +79,23 @@ const getExpenseHeads = async (
   };
 };
 
-// update expense head
-const updateExpenseHead = async (
+// update account head
+const updateAccountHead = async (
   id: string,
-  payload: Partial<ExpenseHead>
-): Promise<ExpenseHead> => {
+  payload: Partial<AccountHead>
+): Promise<AccountHead> => {
   // check is exist
-  const isExist = await prisma.expenseHead.findUnique({
+  const isExist = await prisma.accountHead.findUnique({
     where: {
       id,
     },
   });
 
   if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Expense Head Not Found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Account Head Not Found');
   }
 
-  const result = await prisma.expenseHead.update({
+  const result = await prisma.accountHead.update({
     where: {
       id,
     },
@@ -103,14 +103,14 @@ const updateExpenseHead = async (
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Update Expense Head');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to Update Account Head');
   }
 
   return result;
 };
 
-export const ExpenseHeadService = {
-  createExpenseHead,
-  getExpenseHeads,
-  updateExpenseHead,
+export const AccountHeadService = {
+  createAccountHead,
+  getAccountHeads,
+  updateAccountHead,
 };

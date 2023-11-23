@@ -1,3 +1,3 @@
 export const expenseHeadSearchableFields = ['label'];
 
-export const expenseHeadFilterableFields = ['searchTerm', 'type', 'isActive'];
+export const expenseHeadFilterableFields = ['searchTerm', 'accountHeadId'];

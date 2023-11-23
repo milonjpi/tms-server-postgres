@@ -17,7 +17,7 @@ const createExpenseHead = catchAsync(async (req: Request, res: Response) => {
   sendResponse<ExpenseHead>(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'Trip Created Successfully',
+    message: 'Expense Head Created Successfully',
     data: result,
   });
 });
@@ -55,23 +55,8 @@ const updateExpenseHead = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// delete expense head
-const deleteExpenseHead = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
-
-  const result = await ExpenseHeadService.deleteExpenseHead(id);
-
-  sendResponse<ExpenseHead>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Expense Head Deleted successfully',
-    data: result,
-  });
-});
-
 export const ExpenseHeadController = {
   createExpenseHead,
   getExpenseHeads,
   updateExpenseHead,
-  deleteExpenseHead,
 };

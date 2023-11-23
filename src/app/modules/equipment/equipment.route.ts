@@ -2,39 +2,39 @@ import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
-import { TripExpenseValidation } from './tripExpense.validation';
-import { TripExpenseController } from './tripExpense.controller';
+import { EquipmentValidation } from './equipment.validation';
+import { EquipmentController } from './equipment.controller';
 
 const router = express.Router();
 
-// create Trip
+// create equipment
 router.post(
   '/create',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  validateRequest(TripExpenseValidation.create),
-  TripExpenseController.createExpense
+  validateRequest(EquipmentValidation.create),
+  EquipmentController.createEquipment
 );
 
-// get Trip expenses
+// get equipments
 router.get(
   '/',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  TripExpenseController.getTripExpenses
+  EquipmentController.getEquipments
 );
 
-// update Trip expenses
+// update equipment
 router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  validateRequest(TripExpenseValidation.update),
-  TripExpenseController.updateTripExpense
+  validateRequest(EquipmentValidation.update),
+  EquipmentController.updateEquipment
 );
 
-// delete single Trip
+// delete equipment
 router.delete(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-  TripExpenseController.deleteTripExpense
+  EquipmentController.deleteEquipment
 );
 
-export const TripExpenseRoutes = router;
+export const EquipmentRoutes = router;

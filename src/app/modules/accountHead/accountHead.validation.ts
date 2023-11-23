@@ -3,18 +3,18 @@ import { z } from 'zod';
 const create = z.object({
   body: z.object({
     label: z.string({ required_error: 'Label is Required' }),
-    accountHeadId: z.string({ required_error: 'Account Head ID is required' }),
+    isIncome: z.boolean().optional().default(false),
   }),
 });
 
 const update = z.object({
   body: z.object({
     label: z.string().optional(),
-    accountHeadId: z.string().optional(),
+    isIncome: z.boolean().optional(),
   }),
 });
 
-export const ExpenseHeadValidation = {
+export const AccountHeadValidation = {
   create,
   update,
 };
