@@ -8,7 +8,6 @@ import handleZodError from '../../errors/handleZodError';
 import { Prisma } from '@prisma/client';
 import handleClientError from '../../errors/handleClientError';
 import config from '../../config';
-import { errorLogger } from '../../shared/logger';
 
 const globalErrorHandler: ErrorRequestHandler = (
   err,
@@ -17,7 +16,7 @@ const globalErrorHandler: ErrorRequestHandler = (
   next: NextFunction
 ) => {
   // console error log
-  errorLogger.log('global error handler', err);
+  console.log('global error handler', err);
 
   let statusCode = 500;
   let message = 'Something went wrong !';

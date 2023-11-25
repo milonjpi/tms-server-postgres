@@ -15,12 +15,15 @@ const signIn = catchAsync(async (req: Request, res: Response) => {
 
   // set refresh token into cookie
   const cookieOptions = {
-    secure: false,
+    secure: true,
     httpOnly: true,
+    sameSite: 'none',
     maxAge: parseInt(config.jwt.cookie_max_age || '31536000000'),
   };
 
-  res.cookie('truckMSToken', refreshToken, cookieOptions);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  res.cookie('refreshToken', refreshToken, cookieOptions);
 
   sendResponse<ILoginUserResponse>(res, {
     success: true,
