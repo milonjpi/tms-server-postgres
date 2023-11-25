@@ -19,6 +19,9 @@ const create = z.object({
     incomes: z.array(
       z.object({
         date: z.string({ required_error: 'Date is required' }),
+        vehicleId: z.string({
+          required_error: 'Vehicle ID is required',
+        }),
         incomeHeadId: z.string({ required_error: 'Income Head is required' }),
         amount: z.number({ required_error: 'Amount is required' }),
         remarks: z.string().optional(),
@@ -28,7 +31,11 @@ const create = z.object({
     expenses: z.array(
       z.object({
         date: z.string({ required_error: 'Date is required' }),
+        vehicleId: z.string({
+          required_error: 'Vehicle ID is required',
+        }),
         expenseHeadId: z.string({ required_error: 'Expense head is required' }),
+        unit: z.number().optional(),
         amount: z.number({ required_error: 'Amount is required' }),
         remarks: z.string().optional(),
       }),
@@ -56,7 +63,9 @@ const update = z.object({
       .array(
         z.object({
           date: z.string().optional(),
+          vehicleId: z.string().optional(),
           incomeHeadId: z.string().optional(),
+          unit: z.number().optional(),
           amount: z.number().optional(),
           remarks: z.string().optional(),
         })
@@ -66,6 +75,7 @@ const update = z.object({
       .array(
         z.object({
           date: z.string().optional(),
+          vehicleId: z.string().optional(),
           incomeHeadId: z.string().optional(),
           amount: z.number().optional(),
           remarks: z.string().optional(),

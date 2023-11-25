@@ -7,6 +7,7 @@ const create = z.object({
     model: z.string().optional(),
     vehicleValue: z.number().optional(),
     driverId: z.string().optional(),
+    isActive: z.boolean().optional(),
   }),
 });
 
@@ -17,6 +18,7 @@ const update = z.object({
     model: z.string().optional(),
     vehicleValue: z.number().optional(),
     driverId: z.string().optional(),
+    isActive: z.boolean().optional(),
   }),
 });
 

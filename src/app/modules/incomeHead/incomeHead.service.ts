@@ -12,6 +12,12 @@ import { incomeHeadSearchableFields } from './incomeHead.constant';
 const createIncomeHead = async (
   data: IncomeHead
 ): Promise<IncomeHead | null> => {
+  const findDuplicate = await prisma.incomeHead.findFirst({
+    where: { label: data?.label, accountHeadId: data?.accountHeadId },
+  });
+  if (findDuplicate) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Already Added');
+  }
   const result = await prisma.incomeHead.create({ data });
 
   if (!result) {
@@ -93,6 +99,16 @@ const updateIncomeHead = async (
 
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Income Head Not Found');
+  }
+  const findDuplicate = await prisma.incomeHead.findFirst({
+    where: {
+      id: { not: { equals: id } },
+      label: payload?.label,
+      accountHeadId: payload?.accountHeadId,
+    },
+  });
+  if (findDuplicate) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Already Added');
   }
 
   const result = await prisma.incomeHead.update({
