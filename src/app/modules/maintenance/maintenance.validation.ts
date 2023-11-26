@@ -48,6 +48,7 @@ const create = z.object({
           unitPrice: z.number({ required_error: 'Unit Price is required' }),
           totalPrice: z.number({ required_error: 'Total Price is required' }),
           remarks: z.string().optional(),
+          inHouse: z.boolean().optional(),
         })
       )
       .optional(),
@@ -91,6 +92,7 @@ const update = z.object({
           unitPrice: z.number().optional(),
           totalPrice: z.number().optional(),
           remarks: z.string().optional(),
+          inHouse: z.boolean().optional(),
         })
       )
       .optional(),
