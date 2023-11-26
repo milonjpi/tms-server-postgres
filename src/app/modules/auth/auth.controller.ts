@@ -23,7 +23,7 @@ const signIn = catchAsync(async (req: Request, res: Response) => {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  res.cookie('refreshToken', refreshToken, cookieOptions);
+  res.cookie('truckMSToken', refreshToken, cookieOptions);
 
   sendResponse<ILoginUserResponse>(res, {
     success: true,

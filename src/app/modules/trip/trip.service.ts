@@ -109,7 +109,11 @@ const getAllTrips = async (
       driver: true,
       party: true,
       incomes: true,
-      expenses: true,
+      expenses: {
+        include: {
+          expenseHead: true,
+        },
+      },
     },
   });
 
