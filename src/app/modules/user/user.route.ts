@@ -32,7 +32,7 @@ router.get(
 // update single user
 router.patch(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
   validateRequest(UserValidation.update),
   UserController.updateUser
 );
@@ -40,7 +40,7 @@ router.patch(
 // delete single user
 router.delete(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
   UserController.deleteUser
 );
 

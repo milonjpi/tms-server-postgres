@@ -60,6 +60,10 @@ const updateUser = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'User Not Found');
   }
 
+  if (isExist.role === 'super_admin') {
+    throw new ApiError(httpStatus.NOT_FOUND, 'You can not update Super Admin');
+  }
+
   // hashing password
   if (payload.password) {
     payload.password = await bcrypt.hash(
@@ -93,6 +97,10 @@ const deleteUser = async (id: string): Promise<User | null> => {
 
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User Not Found');
+  }
+
+  if (isExist.role === 'super_admin') {
+    throw new ApiError(httpStatus.NOT_FOUND, 'You can not delete Super Admin');
   }
 
   const result = await prisma.user.delete({
