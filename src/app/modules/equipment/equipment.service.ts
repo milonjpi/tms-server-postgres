@@ -59,6 +59,13 @@ const getEquipments = async (
     },
     skip,
     take: limit,
+    include: {
+      equipmentTitle: {
+        include: {
+          uom: true,
+        },
+      },
+    },
   });
 
   const total = await prisma.equipment.count({

@@ -12,7 +12,7 @@ import { paginationFields } from '../../../constants/pagination';
 const createFuel = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
 
-  const result = await FuelService.createFuel(data?.data, data?.expenses);
+  const result = await FuelService.createFuel(data);
 
   sendResponse<Fuel>(res, {
     success: true,
@@ -57,7 +57,7 @@ const updateFuel = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const data = req.body;
 
-  const result = await FuelService.updateFuel(id, data?.data, data?.expenses);
+  const result = await FuelService.updateFuel(id, data);
 
   sendResponse<Fuel>(res, {
     success: true,

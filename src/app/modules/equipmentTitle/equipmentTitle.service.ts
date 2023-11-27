@@ -64,6 +64,9 @@ const getEquipmentTitles = async (
     },
     skip,
     take: limit,
+    include: {
+      uom: true,
+    },
   });
 
   const total = await prisma.equipmentTitle.count({

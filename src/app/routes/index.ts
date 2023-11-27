@@ -20,6 +20,7 @@ import { IncomeHeadRoutes } from '../modules/incomeHead/incomeHead.route';
 import { EquipmentTitleRoutes } from '../modules/equipmentTitle/equipmentTitle.route';
 import { EquipmentRoutes } from '../modules/equipment/equipment.route';
 import { MaintenanceRoutes } from '../modules/maintenance/maintenance.route';
+import { FuelPumpRoutes } from '../modules/fuelPump/fuelPump.route';
 
 const router = express.Router();
 
@@ -91,6 +92,10 @@ const moduleRoutes = [
   {
     path: '/fuel-type',
     route: FuelTypeRoutes,
+  },
+  {
+    path: '/fuel-pump',
+    route: FuelPumpRoutes,
   },
   {
     path: '/fuel',

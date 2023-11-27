@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
-import { Expense, Fuel, Prisma } from '@prisma/client';
+import { Fuel, Prisma } from '@prisma/client';
 import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IGenericResponse } from '../../../interfaces/common';
@@ -9,12 +9,9 @@ import { IFuelFilters } from './fuel.interface';
 import { fuelSearchableFields } from './fuel.constant';
 
 // create Fuel
-const createFuel = async (
-  data: Fuel,
-  expenses: Expense[]
-): Promise<Fuel | null> => {
+const createFuel = async (data: Fuel): Promise<Fuel | null> => {
   const result = await prisma.fuel.create({
-    data: { ...data, expenses: { create: expenses } },
+    data,
   });
 
   if (!result) {
@@ -84,7 +81,9 @@ const getFuels = async (
     take: limit,
     include: {
       vehicle: true,
+      driver: true,
       fuelType: true,
+      fuelPump: true,
     },
   });
 
@@ -122,8 +121,7 @@ const getSingleFuel = async (id: string): Promise<Fuel | null> => {
 // update single Fuel
 const updateFuel = async (
   id: string,
-  payload: Partial<Fuel>,
-  expenses: Expense[]
+  payload: Partial<Fuel>
 ): Promise<Fuel | null> => {
   // check is exist
   const isExist = await prisma.fuel.findUnique({
@@ -136,29 +134,11 @@ const updateFuel = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Fuel Not Found');
   }
 
-  const result = await prisma.$transaction(async trans => {
-    await trans.fuel.update({
-      where: {
-        id,
-      },
-      data: {
-        expenses: {
-          deleteMany: {},
-        },
-      },
-    });
-
-    return await trans.fuel.update({
-      where: {
-        id,
-      },
-      data: {
-        ...payload,
-        expenses: {
-          create: expenses,
-        },
-      },
-    });
+  const result = await prisma.fuel.update({
+    where: {
+      id,
+    },
+    data: payload,
   });
 
   if (!result) {
@@ -181,23 +161,10 @@ const deleteFuel = async (id: string): Promise<Fuel | null> => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Fuel Not Found');
   }
 
-  const result = await prisma.$transaction(async trans => {
-    await trans.fuel.update({
-      where: {
-        id,
-      },
-      data: {
-        expenses: {
-          deleteMany: {},
-        },
-      },
-    });
-
-    return await trans.fuel.delete({
-      where: {
-        id,
-      },
-    });
+  const result = await prisma.fuel.delete({
+    where: {
+      id,
+    },
   });
 
   return result;
