@@ -133,11 +133,12 @@ model Driver {
   address  String
   isActive Boolean @default(true)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  vehicles  Vehicle[]
-  trips     Trip[]
-  fuels     Fuel[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  vehicles     Vehicle[]
+  trips        Trip[]
+  fuels        Fuel[]
+  maintenances Maintenance[]
 
   @@map("drivers")
 }
@@ -155,14 +156,15 @@ model Vehicle {
 
   isActive Boolean @default(true)
 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  trips         Trip[]
-  fuels         Fuel[]
-  maintenances  Maintenance[]
-  incomes       Income[]
-  expenses      Expense[]
-  equipmentUses EquipmentUse[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  trips                 Trip[]
+  fuels                 Fuel[]
+  maintenances          Maintenance[]
+  incomes               Income[]
+  expenses              Expense[]
+  equipmentUses         EquipmentUse[]
+  externalEquipmentUses ExternalEquipmentUse[]
 
   @@map("vehicles")
 }
@@ -315,16 +317,20 @@ model Maintenance {
   vehicleId String
   vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
 
+  driverId String?
+  driver   Driver? @relation(fields: [driverId], references: [id])
+
   odoMeter        Int?
   workshopType    Workshop
   maintenanceType MaintenanceType
   serviceCharge   Int
   remarks         String?
 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  expenses      Expense[]
-  equipmentUses EquipmentUse[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  expenses              Expense[]
+  equipmentUses         EquipmentUse[]
+  externalEquipmentUses ExternalEquipmentUse[]
 
   @@map("maintenances")
 }
@@ -343,10 +349,11 @@ model EquipmentTitle {
   uomId String
   uom   Uom    @relation(fields: [uomId], references: [id])
 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  equipments    Equipment[]
-  equipmentUses EquipmentUse[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  equipments            Equipment[]
+  equipmentUses         EquipmentUse[]
+  externalEquipmentUses ExternalEquipmentUse[]
 
   @@map("equipmentTitles")
 }
@@ -392,6 +399,31 @@ model EquipmentUse {
   updatedAt DateTime @updatedAt
 
   @@map("equipmentUses")
+}
+
+model ExternalEquipmentUse {
+  id   String   @id @default(uuid())
+  date DateTime
+
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  maintenanceId String
+  maintenance   Maintenance @relation(fields: [maintenanceId], references: [id])
+
+  equipmentTitleId String
+  equipmentTitle   EquipmentTitle @relation(fields: [equipmentTitleId], references: [id])
+
+  quantity   Float
+  unitPrice  Float
+  totalPrice Float
+  remarks    String?
+  inHouse    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("externalEquipmentUses")
 }
 
 // ENUMS

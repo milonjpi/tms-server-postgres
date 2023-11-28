@@ -66,6 +66,16 @@ const getEquipmentTitles = async (
     take: limit,
     include: {
       uom: true,
+      equipments: {
+        select: {
+          quantity: true,
+        },
+      },
+      equipmentUses: {
+        select: {
+          quantity: true,
+        },
+      },
     },
   });
 
