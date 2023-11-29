@@ -13,6 +13,7 @@ const create = z.object({
         vehicleId: z.string({ required_error: 'Vehicle ID is Required' }),
         driverId: z.string({ required_error: 'Driver ID is Required' }),
         partyId: z.string({ required_error: 'Party ID is Required' }),
+        remarks: z.string().optional(),
       },
       { required_error: 'Trip Data is required' }
     ),
@@ -57,6 +58,7 @@ const update = z.object({
         vehicleId: z.string().optional(),
         driverId: z.string().optional(),
         partyId: z.string().optional(),
+        remarks: z.string().optional(),
       })
       .optional(),
     incomes: z

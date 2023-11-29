@@ -14,8 +14,8 @@ const createMaintenance = catchAsync(async (req: Request, res: Response) => {
 
   const result = await MaintenanceService.createMaintenance(
     data?.data,
-    data?.expenses,
-    data?.equipmentUses
+    data?.equipmentUses,
+    data?.externalEquipmentUses
   );
 
   sendResponse<Maintenance>(res, {
@@ -67,8 +67,8 @@ const updateMaintenance = catchAsync(async (req: Request, res: Response) => {
   const result = await MaintenanceService.updateMaintenance(
     id,
     data?.data,
-    data?.expenses,
-    data?.equipmentUses
+    data?.equipmentUses,
+    data?.externalEquipmentUses
   );
 
   sendResponse<Maintenance>(res, {

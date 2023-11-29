@@ -1,24 +1,35 @@
 import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
-import { EquipmentUse, Expense, Maintenance, Prisma } from '@prisma/client';
+import {
+  EquipmentUse,
+  ExternalEquipmentUse,
+  Maintenance,
+  Prisma,
+} from '@prisma/client';
 import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IGenericResponse } from '../../../interfaces/common';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IMaintenanceFilters } from './maintenance.interface';
 import { maintenanceSearchableFields } from './maintenance.constant';
+import { generateMaintenanceBillNo } from './maintenance.utils';
 
 // create Maintenance
 const createMaintenance = async (
   data: Maintenance,
-  expenses: Expense[],
-  equipmentUses: EquipmentUse[]
+  equipmentUses: EquipmentUse[],
+  externalEquipmentUses: ExternalEquipmentUse[]
 ): Promise<Maintenance | null> => {
+  // generate bill no
+  const billNo = await generateMaintenanceBillNo();
+
+  // set bill no
+  data.billNo = billNo;
   const result = await prisma.maintenance.create({
     data: {
       ...data,
-      expenses: { create: expenses },
       equipmentUses: { create: equipmentUses },
+      externalEquipmentUses: { create: externalEquipmentUses },
     },
   });
 
@@ -89,8 +100,9 @@ const getMaintenances = async (
     take: limit,
     include: {
       vehicle: true,
-      expenses: true,
+      driver: true,
       equipmentUses: true,
+      externalEquipmentUses: true,
     },
   });
 
@@ -120,8 +132,9 @@ const getSingleMaintenance = async (
     },
     include: {
       vehicle: true,
-      expenses: true,
+      driver: true,
       equipmentUses: true,
+      externalEquipmentUses: true,
     },
   });
 
@@ -132,8 +145,8 @@ const getSingleMaintenance = async (
 const updateMaintenance = async (
   id: string,
   payload: Partial<Maintenance>,
-  expenses: Expense[],
-  equipmentUses: EquipmentUse[]
+  equipmentUses: EquipmentUse[],
+  externalEquipmentUses: ExternalEquipmentUse[]
 ): Promise<Maintenance | null> => {
   // check is exist
   const isExist = await prisma.maintenance.findUnique({
@@ -152,10 +165,10 @@ const updateMaintenance = async (
         id,
       },
       data: {
-        expenses: {
+        equipmentUses: {
           deleteMany: {},
         },
-        equipmentUses: {
+        externalEquipmentUses: {
           deleteMany: {},
         },
       },
@@ -167,11 +180,11 @@ const updateMaintenance = async (
       },
       data: {
         ...payload,
-        expenses: {
-          create: expenses,
-        },
         equipmentUses: {
           create: equipmentUses,
+        },
+        externalEquipmentUses: {
+          create: externalEquipmentUses,
         },
       },
     });
@@ -203,10 +216,10 @@ const deleteMaintenance = async (id: string): Promise<Maintenance | null> => {
         id,
       },
       data: {
-        expenses: {
+        equipmentUses: {
           deleteMany: {},
         },
-        equipmentUses: {
+        externalEquipmentUses: {
           deleteMany: {},
         },
       },

@@ -69,11 +69,13 @@ const getEquipmentTitles = async (
       equipments: {
         select: {
           quantity: true,
+          totalPrice: true,
         },
       },
       equipmentUses: {
         select: {
           quantity: true,
+          totalPrice: true,
         },
       },
     },
