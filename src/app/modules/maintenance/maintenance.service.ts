@@ -101,8 +101,16 @@ const getMaintenances = async (
     include: {
       vehicle: true,
       driver: true,
-      equipmentUses: true,
-      externalEquipmentUses: true,
+      equipmentUses: {
+        include: {
+          equipmentTitle: true,
+        },
+      },
+      externalEquipmentUses: {
+        include: {
+          equipmentTitle: true,
+        },
+      },
     },
   });
 
@@ -133,8 +141,16 @@ const getSingleMaintenance = async (
     include: {
       vehicle: true,
       driver: true,
-      equipmentUses: true,
-      externalEquipmentUses: true,
+      equipmentUses: {
+        include: {
+          equipmentTitle: true,
+        },
+      },
+      externalEquipmentUses: {
+        include: {
+          equipmentTitle: true,
+        },
+      },
     },
   });
 
