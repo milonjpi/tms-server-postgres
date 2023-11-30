@@ -133,12 +133,13 @@ model Driver {
   address  String
   isActive Boolean @default(true)
 
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  vehicles     Vehicle[]
-  trips        Trip[]
-  fuels        Fuel[]
-  maintenances Maintenance[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  vehicles          Vehicle[]
+  trips             Trip[]
+  fuels             Fuel[]
+  maintenances      Maintenance[]
+  accidentHistories AccidentHistory[]
 
   @@map("drivers")
 }
@@ -165,6 +166,7 @@ model Vehicle {
   expenses              Expense[]
   equipmentUses         EquipmentUse[]
   externalEquipmentUses ExternalEquipmentUse[]
+  accidentHistories     AccidentHistory[]
 
   @@map("vehicles")
 }
@@ -420,6 +422,31 @@ model ExternalEquipmentUse {
   @@map("externalEquipmentUses")
 }
 
+model AccidentHistory {
+  id   String   @id @default(uuid())
+  date DateTime
+
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  driverId String
+  driver   Driver @relation(fields: [driverId], references: [id])
+
+  details String
+
+  location     String
+  amountStatus AccidentAmountStatus
+  totalAmount  Int
+
+  odoMeter Int
+  remarks  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("accidentHistories")
+}
+
 // ENUMS
 enum UserRole {
   super_admin
@@ -435,7 +462,12 @@ enum Workshop {
 
 enum MaintenanceType {
   Scheduled
-  UnScheduled
+  Unscheduled
   Accidental
   Others
+}
+
+enum AccidentAmountStatus {
+  Paid
+  Received
 }

@@ -15,9 +15,4 @@ export const maintenanceFilterableFields = [
 
 export const workshop = ['InHouse', 'External', 'Others'];
 
-export const maintenanceType = [
-  'Scheduled',
-  'UnScheduled',
-  'Accidental',
-  'Others',
-];
+export const maintenanceType = ['Scheduled', 'Unscheduled', 'Accidental', 'Others'];

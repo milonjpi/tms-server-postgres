@@ -21,6 +21,7 @@ import { EquipmentTitleRoutes } from '../modules/equipmentTitle/equipmentTitle.r
 import { EquipmentRoutes } from '../modules/equipment/equipment.route';
 import { MaintenanceRoutes } from '../modules/maintenance/maintenance.route';
 import { FuelPumpRoutes } from '../modules/fuelPump/fuelPump.route';
+import { AccidentHistoryRoutes } from '../modules/accidentHistory/accidentHistory.route';
 
 const router = express.Router();
 
@@ -112,6 +113,10 @@ const moduleRoutes = [
   {
     path: '/maintenance',
     route: MaintenanceRoutes,
+  },
+  {
+    path: '/accident-history',
+    route: AccidentHistoryRoutes,
   },
 ];
 
