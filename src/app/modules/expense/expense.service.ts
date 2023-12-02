@@ -41,22 +41,22 @@ const getExpenses = async (
         },
       })),
     });
+  }
 
-    if (startDate) {
-      andConditions.push({
-        date: {
-          gte: new Date(`${startDate}, 00:00:00`),
-        },
-      });
-    }
+  if (startDate) {
+    andConditions.push({
+      date: {
+        gte: new Date(`${startDate}, 00:00:00`),
+      },
+    });
+  }
 
-    if (endDate) {
-      andConditions.push({
-        date: {
-          lte: new Date(`${endDate}, 23:59:59`),
-        },
-      });
-    }
+  if (endDate) {
+    andConditions.push({
+      date: {
+        lte: new Date(`${endDate}, 23:59:59`),
+      },
+    });
   }
 
   if (Object.keys(filterData).length > 0) {

@@ -457,9 +457,9 @@ model PaperWork {
   certificateNo String
   effectiveDate DateTime
   expiryDate    DateTime?
-  daysToRemind  DateTime?
+  daysToRemind  Int?
 
-  odoMeter    String
+  odoMeter    Int?
   paperType   PaperType
   fee         Int
   otherAmount Int?

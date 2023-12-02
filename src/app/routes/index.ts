@@ -23,6 +23,7 @@ import { MaintenanceRoutes } from '../modules/maintenance/maintenance.route';
 import { FuelPumpRoutes } from '../modules/fuelPump/fuelPump.route';
 import { AccidentHistoryRoutes } from '../modules/accidentHistory/accidentHistory.route';
 import { ExpenseRoutes } from '../modules/expense/expense.route';
+import { PaperWorkRoutes } from '../modules/paperWork/paperWork.route';
 
 const router = express.Router();
 
@@ -122,6 +123,10 @@ const moduleRoutes = [
   {
     path: '/expense',
     route: ExpenseRoutes,
+  },
+  {
+    path: '/paper-work',
+    route: PaperWorkRoutes,
   },
 ];
 
