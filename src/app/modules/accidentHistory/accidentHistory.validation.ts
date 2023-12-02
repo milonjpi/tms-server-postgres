@@ -7,12 +7,11 @@ const create = z.object({
     driverId: z.string({ required_error: 'Driver ID is required' }),
     details: z.string({ required_error: 'Accident Details is required' }),
     location: z.string({ required_error: 'Location Details is required' }),
-    amountStatus: z.enum(['Paid', 'Received'], {
+    amountStatus: z.enum(['Paid', 'Received', 'Nothing'], {
       required_error: 'Paid Status is Required',
     }),
     totalAmount: z.number({ required_error: 'Amount is Required' }),
     odoMeter: z.number({ required_error: 'Odo Meter is Required' }),
-    remarks: z.string().optional(),
   }),
 });
 
@@ -23,10 +22,9 @@ const update = z.object({
     driverId: z.string().optional(),
     details: z.string().optional(),
     location: z.string().optional(),
-    amountStatus: z.enum(['Paid', 'Received']).optional(),
+    amountStatus: z.enum(['Paid', 'Received', 'Nothing']).optional(),
     totalAmount: z.number().optional(),
     odoMeter: z.number().optional(),
-    remarks: z.string().optional(),
   }),
 });
 

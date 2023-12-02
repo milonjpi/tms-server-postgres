@@ -3,6 +3,7 @@ export type IMaintenanceFilters = {
   startDate?: string;
   endDate?: string;
   vehicleId?: string;
+  driverId?: string;
   workshopType?: string;
   maintenanceType?: string;
 };

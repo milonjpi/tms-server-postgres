@@ -167,6 +167,7 @@ model Vehicle {
   equipmentUses         EquipmentUse[]
   externalEquipmentUses ExternalEquipmentUse[]
   accidentHistories     AccidentHistory[]
+  paperWorks            PaperWork[]
 
   @@map("vehicles")
 }
@@ -439,12 +440,36 @@ model AccidentHistory {
   totalAmount  Int
 
   odoMeter Int
-  remarks  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("accidentHistories")
+}
+
+model PaperWork {
+  id   String   @id @default(uuid())
+  date DateTime
+
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  certificateNo String
+  effectiveDate DateTime
+  expiryDate    DateTime?
+  daysToRemind  DateTime?
+
+  odoMeter    String
+  paperType   PaperType
+  fee         Int
+  otherAmount Int?
+  totalAmount Int
+  remarks     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("paperWorks")
 }
 
 // ENUMS
@@ -470,4 +495,12 @@ enum MaintenanceType {
 enum AccidentAmountStatus {
   Paid
   Received
+  Nothing
+}
+
+enum PaperType {
+  Registration
+  Tax
+  Fitness
+  Route
 }
