@@ -24,6 +24,7 @@ import { FuelPumpRoutes } from '../modules/fuelPump/fuelPump.route';
 import { AccidentHistoryRoutes } from '../modules/accidentHistory/accidentHistory.route';
 import { ExpenseRoutes } from '../modules/expense/expense.route';
 import { PaperWorkRoutes } from '../modules/paperWork/paperWork.route';
+import { ReportRoutes } from '../modules/report/report.route';
 
 const router = express.Router();
 
@@ -127,6 +128,10 @@ const moduleRoutes = [
   {
     path: '/paper-work',
     route: PaperWorkRoutes,
+  },
+  {
+    path: '/report',
+    route: ReportRoutes,
   },
 ];
 
