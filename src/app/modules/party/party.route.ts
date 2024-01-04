@@ -10,7 +10,7 @@ const router = express.Router();
 // create Party
 router.post(
   '/create',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(PartyValidation.create),
   PartyController.createParty
 );
@@ -32,7 +32,7 @@ router.get(
 // update single Party
 router.patch(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(PartyValidation.update),
   PartyController.updateParty
 );
@@ -40,7 +40,7 @@ router.patch(
 // inactive single Party
 router.patch(
   '/:id/inactive',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   PartyController.inactiveParty
 );
 

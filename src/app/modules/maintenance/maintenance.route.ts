@@ -10,7 +10,7 @@ const router = express.Router();
 // create Maintenance
 router.post(
   '/create',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(MaintenanceValidation.create),
   MaintenanceController.createMaintenance
 );
@@ -32,7 +32,7 @@ router.get(
 // update single Maintenance
 router.patch(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(MaintenanceValidation.update),
   MaintenanceController.updateMaintenance
 );
@@ -40,7 +40,7 @@ router.patch(
 // delete single Maintenance
 router.delete(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   MaintenanceController.deleteMaintenance
 );
 

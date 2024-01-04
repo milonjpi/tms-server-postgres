@@ -10,7 +10,7 @@ const router = express.Router();
 // create Driver
 router.post(
   '/create',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(DriverValidation.create),
   DriverController.createDriver
 );
@@ -32,7 +32,7 @@ router.get(
 // update single Driver
 router.patch(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(DriverValidation.update),
   DriverController.updateDriver
 );
@@ -40,7 +40,7 @@ router.patch(
 // inactive single Driver
 router.patch(
   '/:id/inactive',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   DriverController.inactiveDriver
 );
 

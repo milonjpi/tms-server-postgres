@@ -9,6 +9,8 @@ const allowedOrigins = [
   'http://127.0.0.1:3000',
   'http://localhost:3000',
   'https://truck-management-frontend.web.app',
+  'https://tms.fl-bd.com',
+  'http://tms.fl-bd.com',
 ];
 
 export default allowedOrigins;

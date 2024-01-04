@@ -10,7 +10,7 @@ const router = express.Router();
 // create accident history
 router.post(
   '/create',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(AccidentHistoryValidation.create),
   AccidentHistoryController.createAccidentHistory
 );
@@ -25,7 +25,7 @@ router.get(
 // update accident history
 router.patch(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(AccidentHistoryValidation.update),
   AccidentHistoryController.updateAccidentHistory
 );
@@ -33,7 +33,7 @@ router.patch(
 // delete accident history
 router.delete(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   AccidentHistoryController.deleteAccidentHistory
 );
 

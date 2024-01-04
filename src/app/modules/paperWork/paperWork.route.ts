@@ -10,7 +10,7 @@ const router = express.Router();
 // create Paper Work
 router.post(
   '/create',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(PaperWorkValidation.create),
   PaperWorkController.createPaperWork
 );
@@ -25,7 +25,7 @@ router.get(
 // update single Paper Work
 router.patch(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(PaperWorkValidation.update),
   PaperWorkController.updatePaperWork
 );
@@ -33,7 +33,7 @@ router.patch(
 // delete single Paper Work
 router.delete(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   PaperWorkController.deletePaperWork
 );
 

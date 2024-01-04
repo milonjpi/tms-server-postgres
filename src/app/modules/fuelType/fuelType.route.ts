@@ -10,7 +10,7 @@ const router = express.Router();
 // create FuelType
 router.post(
   '/create',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(FuelTypeValidation.createUpdate),
   FuelTypeController.createFuelType
 );
@@ -25,7 +25,7 @@ router.get(
 // update single FuelType
 router.patch(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(FuelTypeValidation.createUpdate),
   FuelTypeController.updateFuelType
 );

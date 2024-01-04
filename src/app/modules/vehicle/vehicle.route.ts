@@ -10,7 +10,7 @@ const router = express.Router();
 // create Vehicle
 router.post(
   '/create',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(VehicleValidation.create),
   VehicleController.createVehicle
 );
@@ -32,7 +32,7 @@ router.get(
 // update single Vehicle
 router.patch(
   '/:id',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   validateRequest(VehicleValidation.update),
   VehicleController.updateVehicle
 );
@@ -40,7 +40,7 @@ router.patch(
 // delete single Vehicle
 router.patch(
   '/:id/inactive',
-  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   VehicleController.inactiveVehicle
 );
 
