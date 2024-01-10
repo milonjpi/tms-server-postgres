@@ -29,4 +29,4 @@
 
 ### Frontend GitHub Link: https://github.com/milonjpi/tms-client-2023
 
-### Frontend Live Link: https://basic-inventory-demo.web.app
+### Frontend Live Link: https://truck-management-frontend.web.app
